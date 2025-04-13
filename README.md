@@ -6,6 +6,14 @@
 
 ---
 
+## 🔗 Oynamak İçin Tıkla
+
+[![Play on GitHub Pages](https://img.shields.io/badge/Oynamak%20İçin-GitHub%20Pages-blue?style=for-the-badge&logo=github)](https://ahmetemingenc.github.io/time-glitch-game/)
+
+
+---
+
+
 ## 🧠 Oynanış Özellikleri
 
 ### 🎯 Otomatik İlerleyen Karakter

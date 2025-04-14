@@ -1,4 +1,4 @@
-# 🎮 TIME GLITCH V1.3
+# 🎮 TIME GLITCH V1.4
 
 **TIME GLITCH**, HTML, CSS ve JavaScript kullanılarak geliştirilmiş, zaman temalı bir platform oyunudur. Oyuncu sonsuz bir düzlemde ilerlerken zamanın kontrolünü elinde tutmak zorundadır. Her seviyede farklı zorluklar oyuncuyu beklerken, oyun hem refleks hem dikkat gerektirir.
 

@@ -192,12 +192,20 @@ Oyuncunun seçtiği renk karaktere uygulanır. Neon efekti görsellik kazandır�
 
 ---
 
+## 🟢 Güncelleme Notları 
+- V1.1 ile Pause Menüsü eklendi
+- V1.2 ile arkaplan müziği ve müzik manipülasyonu (açma/kapama ve ses seviyesini değiştirme)  eklendi.
+- V1.3 ile Seviye 1 başarıyla tamamlandıktan sonra Seviye 2 yerine Seviye 3'e geçiş hatası düzeltildi.
+- V1.4 ile zıplama gücü arttırıldı, yerçekim kuvveti azaltıldı.
+
+---
+
 ## 🔴 Bilinen Hatalar
 - Platformdaki engeller iç içe veya aralıksız oluşabiliyor. (geçici çözüm için karakterin zıplama animasyonu çalıştığı anda engele çarpmak engeli yok ediyor)
 - Bazı durumlarda Pause sırasında zaman durması mekaniği çalışmaya devam ediyor ve glitch cezası uygulanıyor.
 - Bazı durumlarda seviye süresi bittiği halde oyun arkaplanda devam ediyor ve karakter bir engele çarparsa oyun kaybediliyor.
-- Nadiren, Seviye 1 başarıyla tamamlandıktan sonra Seviye 2 yerine Seviye 3'e geçiş oluyor (v1.3 ile çözüldü)
 - Bazı durumlarda Seviye 3'ten itibaren, Ana Menü'ye dönmek veya oyunu kaybetmek seviyeyi sıfırlamıyor.
 - Bazı durumlarda Seviye 3'ten itibaren, tüm zaman durmaları başarıyla tamamlansa bile can kazanma sistemi çalışmıyor.
 
 ---
+

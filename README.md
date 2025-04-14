@@ -82,7 +82,7 @@ Tüm canlar bittiğinde oyun sona erer ve **“Tekrar Dene”** butonu belirir. 
 | Tuş       | İşlev                      |
 |-----------|----------------------------|
 | `W`       | Zıpla                      |
-| `S`       | Eğil (animasyon)           |
+| `S`       | Eğil (şu anlık sadece animasyon)           |
 | `ESC`     | Oyunu durdur (Pause)       |
 | `←↑→↓`    | Zaman durması sırasında yön seçimi |
 
@@ -92,7 +92,7 @@ Tüm canlar bittiğinde oyun sona erer ve **“Tekrar Dene”** butonu belirir. 
 
 - `HTML` – Yapı  
 - `CSS` – Tasarım (Cyberpunk teması, neon efektler, animasyonlar)  
-- `JavaScript` – Oyun motoru, zaman kontrolü, çarpışma, tuş tepkisi, DOM güncellemeleri
+- `Vanilla JavaScript` – Oyun motoru, zaman kontrolü, çarpışma, tuş tepkisi, DOM güncellemeleri
 
 ---
 

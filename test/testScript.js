@@ -18,7 +18,7 @@ let musicOn = true, isPaused = true, level = 1, time = 20, lives = 0;
 let timer, gameLoop, arrowInterval, spawnInterval, arrowCountdown;
 let arrowElapsed = 0, arrowDuration = 0;
 let onArrowKeyDown = null;
-let playerY = 30, velocityY = 0, gravity = -0.30, jumpStrength = 10.3, isJumping = false;
+let playerY = 30, velocityY = 0, gravity = -0.45, jumpStrength = 10.3, isJumping = false;
 let worldOffset = 0, worldSpeed = 2;
 let keysToPress = [], arrows = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
 let successfulArrowCount = 0, totalArrowCount = 0;
@@ -70,6 +70,9 @@ backToMenuBtn.onclick = () => {
     [timer, gameLoop, arrowInterval, spawnInterval].forEach(clearInterval);
     isPaused = true;
     level = 1;
+    lives = 0;
+    successfulArrowCount = 0;
+    totalArrowCount = 0;
     lives = 0;
 };
 
@@ -250,7 +253,9 @@ function loseLifeOrRestart() {
         lives--;
         livesDisplay.textContent = lives;
         showMessage("Bir can kaybettin! Devam...");
-        setTimeout(startLevel, 2000);
+        setTimeout(() => {
+            if (!overlay.classList.contains("active")) startLevel();
+        }, 2000);
     } else {
         showMessage("Oyun bitti.");
         isPaused = true;
@@ -260,12 +265,15 @@ function loseLifeOrRestart() {
 
 function nextLevel() {
     isPaused = true;
+    [timer, gameLoop, arrowInterval, spawnInterval].forEach(clearInterval);
     if (totalArrowCount > 0 && successfulArrowCount === totalArrowCount) {
         addLife();
     }
     successfulArrowCount = 0;
     totalArrowCount = 0;
     level++;
+    levelTransitionText.textContent = "Seviye " + (level - 1) + " tamamlandı!";
+    levelTransition.classList.add("active");
     levelTransitionText.textContent = "Seviye " + (level - 1) + " tamamlandı!";
     levelTransition.classList.add("active");
 }
@@ -327,6 +335,7 @@ function removeAll(sel) {
 }
 
 function showMessage(txt) {
+    if (overlay.classList.contains("active")) return;
     messageText.textContent = txt;
     overlay.classList.add("active");
     if (!txt.includes("bitti") && !txt.includes("can") && !txt.includes("Seviye")) {

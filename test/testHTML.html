@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <title>TIME GLITCH GAME</title>
+    <link rel="stylesheet" href="testCSS.css" />
+</head>
+<body>
+
+<div id="mainMenu" class="menu active">
+    <h1>TIME GLITCH</h1>
+    <label for="colorPicker">Karakter Rengi:</label>
+    <input type="color" id="colorPicker" value="#00ffcc">
+    <button id="startBtn">Oyuna Başla</button>
+</div>
+
+<div id="pauseMenu" class="menu">
+    <h2>Oyun Duraklatıldı</h2>
+    <button id="resumeBtn">Devam Et</button>
+    <button id="toggleMusicBtn">Müziği Kapat</button>
+    <label for="volumeRange">Müzik Ses Seviyesi</label>
+    <input type="range" id="volumeRange" min="0" max="1" step="0.05" value="0.5">
+    <button id="backToMenuBtn">Ana Menüye Dön</button>
+</div>
+
+<div id="levelTransition" class="menu">
+    <h2 id="levelTransitionText">Seviye Geçildi!</h2>
+    <button id="nextLevelBtn">Diğer Seviyeye Geç</button>
+</div>
+
+<div id="game">
+    <div id="player"></div>
+    <div id="world"><div id="platform"></div></div>
+    <div id="arrowPrompt"></div>
+    <div id="keyTimerBar"><div id="keyTimerFill"></div></div>
+    <div id="timer">Süre: <span id="timeLeft">0</span></div>
+    <div id="lives">Can: <span id="livesCount">0</span></div>
+    <div id="level">Seviye: <span id="levelNum">1</span></div>
+    <div id="messageOverlay">
+        <div id="messageText"></div>
+        <button id="restartBtn">Tekrar Dene</button>
+    </div>
+    <div id="floatingMessage"></div>
+</div>
+
+<audio id="bgm" src="timeglitchgame/assets/sounds/background.wav" loop></audio>
+
+<script src="testScript.js"></script>
+</body>
+</html>

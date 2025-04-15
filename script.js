@@ -1,3 +1,4 @@
+// === GLOBAL DEĞİŞKENLER ===
 const $ = id => document.getElementById(id);
 const player = $("player"), world = $("world"), game = $("game");
 const arrowPrompt = $("arrowPrompt"), timeDisplay = $("timeLeft");
@@ -14,10 +15,13 @@ const nextLevelBtn = $("nextLevelBtn"), bgm = $("bgm");
 const colorPicker = $("colorPicker");
 
 let musicOn = true, isPaused = true, level = 1, time = 20, lives = 0;
-let timer, gameLoop, arrowInterval, spawnInterval;
-let playerY = 30, velocityY = 0, gravity = -0.3, jumpStrength = 10.3, isJumping = false;
+let timer, gameLoop, arrowInterval, spawnInterval, arrowCountdown;
+let arrowElapsed = 0, arrowDuration = 0;
+let onArrowKeyDown = null;
+let playerY = 30, velocityY = 0, gravity = -0.30, jumpStrength = 10.3, isJumping = false;
 let worldOffset = 0, worldSpeed = 2;
 let keysToPress = [], arrows = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
+let successfulArrowCount = 0, totalArrowCount = 0;
 
 function applyCharacterColor() {
     const color = colorPicker.value;
@@ -35,6 +39,19 @@ startBtn.onclick = () => {
 resumeBtn.onclick = () => {
     pauseMenu.classList.remove("active");
     isPaused = false;
+
+    if (arrowPrompt.style.display === "block" && arrowElapsed < arrowDuration) {
+        arrowCountdown = setInterval(() => {
+            arrowElapsed += 50;
+            keyFill.style.width = (100 - arrowElapsed / arrowDuration * 100) + "%";
+
+            if (arrowElapsed >= arrowDuration) {
+                clearInterval(arrowCountdown);
+                handleArrowFail();
+                cleanupArrowPrompt();
+            }
+        }, 50);
+    }
 };
 
 toggleMusicBtn.onclick = () => {
@@ -52,6 +69,8 @@ backToMenuBtn.onclick = () => {
     mainMenu.classList.add("active");
     [timer, gameLoop, arrowInterval, spawnInterval].forEach(clearInterval);
     isPaused = true;
+    level = 1;
+    lives = 0;
 };
 
 nextLevelBtn.onclick = () => {
@@ -60,6 +79,8 @@ nextLevelBtn.onclick = () => {
 };
 
 restartBtn.onclick = () => {
+    level = 1;
+    lives = 0;
     overlay.classList.remove("active");
     startLevel();
 };
@@ -68,6 +89,9 @@ document.addEventListener("keydown", e => {
     if (e.key === "Escape") {
         isPaused = true;
         pauseMenu.classList.add("active");
+        arrowPrompt.style.display = "none";
+        keyBar.style.display = "none";
+        if (arrowCountdown) clearInterval(arrowCountdown);
     }
     if (e.key.toLowerCase() === "w" && !isJumping && !isPaused) {
         velocityY = jumpStrength;
@@ -89,18 +113,13 @@ function startLevel() {
     time = 20 + (level - 1) * 10;
     timeDisplay.textContent = time;
     levelDisplay.textContent = level;
-    worldOffset = 0;
-    playerY = 30;
-    velocityY = 0;
-    isJumping = false;
-    updatePlayerPosition();
-    applyCharacterColor();
+    worldOffset = 0; playerY = 30; velocityY = 0; isJumping = false;
+    updatePlayerPosition(); applyCharacterColor();
     removeAll(".obstacle, .questionBox");
-    startTimer();
-    scheduleArrowPrompts();
-    scheduleObstacles();
-    startGameLoop();
-    overlay.classList.remove("active");
+    successfulArrowCount = 0;
+    totalArrowCount = 0;
+    startTimer(); scheduleArrowPrompts(); scheduleObstacles();
+    startGameLoop(); overlay.classList.remove("active");
     setTimeout(() => isPaused = false, 1000);
 }
 
@@ -120,11 +139,7 @@ function startGameLoop() {
         });
         velocityY += gravity;
         playerY += velocityY;
-        if (playerY <= 30) {
-            playerY = 30;
-            velocityY = 0;
-            isJumping = false;
-        }
+        if (playerY <= 30) { playerY = 30; velocityY = 0; isJumping = false; }
         updatePlayerPosition();
         checkCollisions();
     }, 16);
@@ -150,6 +165,7 @@ function scheduleArrowPrompts() {
 
 function pauseGameForArrow() {
     if (
+        isPaused ||
         pauseMenu.classList.contains("active") ||
         levelTransition.classList.contains("active") ||
         mainMenu.classList.contains("active")
@@ -161,6 +177,8 @@ function pauseGameForArrow() {
         keysToPress.push(arrows[Math.floor(Math.random() * arrows.length)]);
     }
 
+    totalArrowCount++;
+
     arrowPrompt.innerHTML = keysToPress.map(k => ({
         ArrowLeft: "⬅️", ArrowRight: "➡️", ArrowUp: "⬆️", ArrowDown: "⬇️"
     }[k])).join(" ");
@@ -169,45 +187,47 @@ function pauseGameForArrow() {
     keyBar.style.display = "block";
     keyFill.style.width = "100%";
 
-    let elapsed = 0, duration = Math.max(3000 - level * 150, 1000);
-    const countdown = setInterval(() => {
-        elapsed += 50;
-        keyFill.style.width = (100 - elapsed / duration * 100) + "%";
-        if (elapsed >= duration) {
-            clearInterval(countdown);
+    arrowElapsed = 0;
+    arrowDuration = Math.max(3000 - level * 150, 1000);
+
+    arrowCountdown = setInterval(() => {
+        arrowElapsed += 50;
+        keyFill.style.width = (100 - arrowElapsed / arrowDuration * 100) + "%";
+
+        if (arrowElapsed >= arrowDuration) {
+            clearInterval(arrowCountdown);
             handleArrowFail();
-            cleanup();
+            cleanupArrowPrompt();
         }
     }, 50);
 
-    let pressed = [];
-
-    function onKeyDown(e) {
-        if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+    onArrowKeyDown = function(e) {
+        if (!arrows.includes(e.key)) return;
 
         if (keysToPress.includes(e.key)) {
-            pressed.push(e.key);
-            if (pressed.length === keysToPress.length) {
+            keysToPress = keysToPress.filter(k => k !== e.key);
+            if (keysToPress.length === 0) {
                 isPaused = false;
-                cleanup();
+                successfulArrowCount++;
+                cleanupArrowPrompt();
             }
         } else {
             glitchEffect();
             setTimeout(() => {
                 handleArrowFail();
-                cleanup();
+                cleanupArrowPrompt();
             }, 400);
         }
-    }
+    };
 
-    function cleanup() {
-        document.removeEventListener("keydown", onKeyDown);
-        arrowPrompt.style.display = "none";
-        keyBar.style.display = "none";
-        clearInterval(countdown);
-    }
+    document.addEventListener("keydown", onArrowKeyDown);
+}
 
-    document.addEventListener("keydown", onKeyDown);
+function cleanupArrowPrompt() {
+    arrowPrompt.style.display = "none";
+    keyBar.style.display = "none";
+    clearInterval(arrowCountdown);
+    document.removeEventListener("keydown", onArrowKeyDown);
 }
 
 function handleArrowFail() {
@@ -240,19 +260,22 @@ function loseLifeOrRestart() {
 
 function nextLevel() {
     isPaused = true;
+    if (totalArrowCount > 0 && successfulArrowCount === totalArrowCount) {
+        addLife();
+    }
+    successfulArrowCount = 0;
+    totalArrowCount = 0;
     level++;
     levelTransitionText.textContent = "Seviye " + (level - 1) + " tamamlandı!";
     levelTransition.classList.add("active");
 }
 
-let lastObstacleTime = 0;
-let lastObstacleX = -999;
-
 function scheduleObstacles() {
     clearInterval(spawnInterval);
     spawnInterval = setInterval(() => {
-        const newX = 900 + Math.floor(Math.random() * 300);
+        if (isPaused) return;
 
+        const newX = 900 + Math.floor(Math.random() * 300);
         const allObstacles = Array.from(document.querySelectorAll(".obstacle, .questionBox"));
 
         const collision = allObstacles.some(ob => {
@@ -260,7 +283,7 @@ function scheduleObstacles() {
             return Math.abs(existingX - newX) < 80;
         });
 
-        if (collision) return; // Eğer çakışma varsa engel oluşturma
+        if (collision) return;
 
         const ob = document.createElement("div");
         ob.style.left = newX + "px";
@@ -270,7 +293,6 @@ function scheduleObstacles() {
             ob.textContent = "?";
         }
         game.appendChild(ob);
-
     }, Math.max(1000, 1800 - level * 100));
 }
 
@@ -310,4 +332,12 @@ function showMessage(txt) {
     if (!txt.includes("bitti") && !txt.includes("can") && !txt.includes("Seviye")) {
         setTimeout(() => overlay.classList.remove("active"), 1500);
     }
+}
+
+function addLife() {
+    lives++;
+    livesDisplay.textContent = lives;
+    floatingMessage.textContent = "Ekstra Can Kazandın!";
+    floatingMessage.style.display = "block";
+    setTimeout(() => floatingMessage.style.display = "none", 1500);
 }

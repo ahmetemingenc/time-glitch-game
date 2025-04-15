@@ -1,0 +1,170 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    background: #0a0a0a;
+    color: #fff;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+}
+#game {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+    overflow: hidden;
+}
+#player {
+    width: 40px;
+    height: 40px;
+    background-color: #00ffcc;
+    box-shadow: 0 0 15px #00ffcc;
+    position: absolute;
+    left: 100px;
+    bottom: 30px;
+    border-radius: 5px;
+    transition: height 0.1s ease;
+}
+#world {
+    position: absolute;
+    height: 100%;
+    width: 100000px;
+    display: flex;
+    align-items: flex-end;
+    left: 0;
+}
+#platform {
+    width: 100%;
+    height: 30px;
+    background: #111;
+    box-shadow: 0 0 10px #ff00cc;
+}
+.obstacle, .questionBox {
+    width: 30px;
+    height: 50px;
+    position: absolute;
+    bottom: 30px;
+    background-color: #ff0066;
+    box-shadow: 0 0 10px #ff0066;
+    border-radius: 3px;
+}
+.questionBox {
+    background-color: #ffff00;
+    color: #000;
+    font-weight: bold;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+}
+#arrowPrompt {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 60px;
+    color: #0ff;
+    text-shadow: 0 0 10px #0ff;
+    display: none;
+    z-index: 100;
+}
+#keyTimerBar {
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 10px;
+    background: #333;
+    border: 1px solid #999;
+    display: none;
+    z-index: 900;
+}
+#keyTimerFill {
+    width: 100%;
+    height: 100%;
+    background: #0ff;
+    box-shadow: 0 0 5px #0ff;
+}
+#timer, #lives, #level {
+    position: absolute;
+    top: 10px;
+    padding: 10px 15px;
+    font-size: 18px;
+    border: 1px solid #0ff;
+    border-radius: 8px;
+    background: rgba(0,255,255,0.1);
+    box-shadow: 0 0 8px #0ff;
+}
+#timer { left: 10px; }
+#level { right: 140px; }
+#lives { right: 10px; }
+
+.menu {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #0a0a0a 0%, #1a1a2e 100%);
+    z-index: 200;
+    color: #0ff;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-shadow: 0 0 10px #0ff;
+}
+.menu.active {
+    display: flex;
+}
+button {
+    background-color: #0ff;
+    color: #000;
+    font-weight: bold;
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 10px #0ff;
+}
+#messageOverlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #0ff;
+    text-shadow: 0 0 10px #0ff;
+    font-size: 24px;
+}
+#messageOverlay.active {
+    display: flex;
+}
+#floatingMessage {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0,255,255,0.1);
+    padding: 10px 20px;
+    border: 1px solid #0ff;
+    border-radius: 8px;
+    color: #0ff;
+    font-size: 18px;
+    display: none;
+    z-index: 999;
+}
+.glitch {
+    animation: glitch 0.5s linear;
+}
+@keyframes glitch {
+    0% { transform: translate(0); opacity: 1; filter: hue-rotate(0deg); }
+    20% { transform: translate(-5px, 5px) scale(1.01); filter: hue-rotate(30deg); opacity: 0.8; }
+    40% { transform: translate(5px, -5px) scale(0.98); filter: hue-rotate(-30deg); opacity: 0.6; }
+    60% { transform: translate(3px, 2px) scale(1.02); filter: hue-rotate(45deg); opacity: 0.8; }
+    80% { transform: translate(-3px, -3px) scale(0.97); filter: hue-rotate(-45deg); opacity: 0.9; }
+    100% { transform: translate(0); opacity: 1; filter: hue-rotate(0deg); }
+}

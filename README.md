@@ -1,4 +1,4 @@
-# 🎮 TIME GLITCH V1.4
+# 🎮 TIME GLITCH V1.5
 
 **TIME GLITCH**, HTML, CSS ve JavaScript kullanılarak geliştirilmiş, zaman temalı bir platform oyunudur. Oyuncu sonsuz bir düzlemde ilerlerken zamanın kontrolünü elinde tutmak zorundadır. Her seviyede farklı zorluklar oyuncuyu beklerken, oyun hem refleks hem dikkat gerektirir.
 
@@ -197,11 +197,11 @@ Oyuncunun seçtiği renk karaktere uygulanır. Neon efekti görsellik kazandır�
 - V1.2 ile arkaplan müziği ve müzik manipülasyonu (açma/kapama ve ses seviyesini değiştirme)  eklendi.
 - V1.3 ile Seviye 1 başarıyla tamamlandıktan sonra Seviye 2 yerine Seviye 3'e geçiş hatası düzeltildi.
 - V1.4 ile zıplama gücü arttırıldı, yerçekim kuvveti azaltıldı.
+- V1.5 ile dosya yapısı değiştirildi ve platformdaki engellerin iç içe veya aralıksız oluşması sorunları giderildi (hala karakterin zıplama animasyonu çalıştığı anda engele çarpmak engeli yok ediyor)
 
 ---
 
 ## 🔴 Bilinen Hatalar
-- Platformdaki engeller iç içe veya aralıksız oluşabiliyor. (geçici çözüm için karakterin zıplama animasyonu çalıştığı anda engele çarpmak engeli yok ediyor)
 - Bazı durumlarda Pause sırasında zaman durması mekaniği çalışmaya devam ediyor ve glitch cezası uygulanıyor.
 - Bazı durumlarda seviye süresi bittiği halde oyun arkaplanda devam ediyor ve karakter bir engele çarparsa oyun kaybediliyor.
 - Bazı durumlarda Seviye 3'ten itibaren, Ana Menü'ye dönmek veya oyunu kaybetmek seviyeyi sıfırlamıyor.

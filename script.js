@@ -22,6 +22,7 @@ let playerY = 30, velocityY = 0, gravity = -0.30, jumpStrength = 10.3, isJumping
 let worldOffset = 0, worldSpeed = 2;
 let keysToPress = [], arrows = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
 let successfulArrowCount = 0, totalArrowCount = 0;
+let timeRate = 1;
 
 function applyCharacterColor() {
     const color = colorPicker.value;
@@ -71,6 +72,9 @@ backToMenuBtn.onclick = () => {
     isPaused = true;
     level = 1;
     lives = 0;
+    successfulArrowCount = 0;
+    totalArrowCount = 0;
+    timeRate = 1;
 };
 
 nextLevelBtn.onclick = () => {
@@ -149,8 +153,8 @@ function startTimer() {
     clearInterval(timer);
     timer = setInterval(() => {
         if (!isPaused) {
-            time--;
-            timeDisplay.textContent = time;
+            time -= 1 * timeRate;
+            timeDisplay.textContent = Math.ceil(time);
             if (time <= 0) nextLevel();
         }
     }, 1000);
@@ -204,14 +208,17 @@ function pauseGameForArrow() {
     onArrowKeyDown = function(e) {
         if (!arrows.includes(e.key)) return;
 
-        if (keysToPress.includes(e.key)) {
-            keysToPress = keysToPress.filter(k => k !== e.key);
+        const index = keysToPress.indexOf(e.key);
+        if (index !== -1) {
+            keysToPress.splice(index, 1);
             if (keysToPress.length === 0) {
-                isPaused = false;
                 successfulArrowCount++;
+                clearInterval(arrowCountdown);
                 cleanupArrowPrompt();
+                isPaused = false;
             }
         } else {
+            clearInterval(arrowCountdown);
             glitchEffect();
             setTimeout(() => {
                 handleArrowFail();
@@ -232,11 +239,22 @@ function cleanupArrowPrompt() {
 
 function handleArrowFail() {
     isPaused = false;
-    if (keysToPress.length === 1) loseLifeOrRestart();
-    else {
-        showMessage("Başarısız! Zamanda geri gittin.");
-        level = Math.max(1, level - 1);
-        setTimeout(startLevel, 2000);
+    if (lives > 0) {
+        lives--;
+        livesDisplay.textContent = lives;
+        floatingMessage.textContent = "Zamanda Geriye Gittin!";
+        floatingMessage.style.display = "block";
+        setTimeout(() => {
+            floatingMessage.style.display = "none";
+            startLevel();
+        }, 1500);
+    } else {
+        showMessage("Oyun bitti.");
+        level = 1;
+        successfulArrowCount = 0;
+        totalArrowCount = 0;
+        isPaused = true;
+        [timer, gameLoop, arrowInterval, spawnInterval].forEach(clearInterval);
     }
 }
 
@@ -250,7 +268,9 @@ function loseLifeOrRestart() {
         lives--;
         livesDisplay.textContent = lives;
         showMessage("Bir can kaybettin! Devam...");
-        setTimeout(startLevel, 2000);
+        setTimeout(() => {
+            if (!overlay.classList.contains("active")) startLevel();
+        }, 2000);
     } else {
         showMessage("Oyun bitti.");
         isPaused = true;
@@ -260,12 +280,15 @@ function loseLifeOrRestart() {
 
 function nextLevel() {
     isPaused = true;
+    [timer, gameLoop, arrowInterval, spawnInterval].forEach(clearInterval);
     if (totalArrowCount > 0 && successfulArrowCount === totalArrowCount) {
         addLife();
     }
     successfulArrowCount = 0;
     totalArrowCount = 0;
     level++;
+    levelTransitionText.textContent = "Seviye " + (level - 1) + " tamamlandı!";
+    levelTransition.classList.add("active");
     levelTransitionText.textContent = "Seviye " + (level - 1) + " tamamlandı!";
     levelTransition.classList.add("active");
 }
@@ -308,12 +331,14 @@ function checkCollisions() {
             pr.top < or.bottom
         ) {
             if (ob.classList.contains("questionBox")) {
-                const bonus = Math.random() < 0.5 ? -5 : 5;
-                time += bonus;
-                timeDisplay.textContent = time;
-                floatingMessage.textContent = bonus > 0 ? "Zaman yavaşladı!" : "Zaman hızlandı!";
+                const slow = Math.random() < 0.5;
+                timeRate = slow ? 0.5 : 2;
+                floatingMessage.textContent = slow ? "Zaman yavaşladı!" : "Zaman hızlandı!";
                 floatingMessage.style.display = "block";
-                setTimeout(() => floatingMessage.style.display = "none", 1000);
+                setTimeout(() => {
+                    timeRate = 1;
+                    floatingMessage.style.display = "none";
+                }, 3000);
             } else {
                 if (!isJumping) loseLifeOrRestart();
             }
@@ -327,6 +352,7 @@ function removeAll(sel) {
 }
 
 function showMessage(txt) {
+    if (overlay.classList.contains("active")) return;
     messageText.textContent = txt;
     overlay.classList.add("active");
     if (!txt.includes("bitti") && !txt.includes("can") && !txt.includes("Seviye")) {

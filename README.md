@@ -1,4 +1,4 @@
-# 🎮 TIME GLITCH V1.6
+# 🎮 TIME GLITCH V1.7
 
 **TIME GLITCH**, HTML, CSS ve JavaScript kullanılarak geliştirilmiş, zaman temalı bir platform oyunudur. Oyuncu sonsuz bir düzlemde ilerlerken zamanın kontrolünü elinde tutmak zorundadır. Her seviyede farklı zorluklar oyuncuyu beklerken, oyun hem refleks hem dikkat gerektirir.
 
@@ -199,13 +199,14 @@ Oyuncunun seçtiği renk karaktere uygulanır. Neon efekti görsellik kazandır�
 - V1.4 ile zıplama gücü arttırıldı, yerçekim kuvveti azaltıldı.
 - V1.5 ile dosya yapısı değiştirildi ve platformdaki engellerin iç içe veya aralıksız oluşması sorunları giderildi (hala karakterin zıplama animasyonu çalıştığı anda engele çarpmak engeli yok ediyor)
 - V1.6 ile Pause sırasında zaman durması mekaniğinin çalışmaya devam etmesi sorunu düzeltildi. Can kazanma sistemi güncellendi.
+- V1.6.2 ile test dosyaları eklendi
+- V1.7 ile can kaybetme sistemi değiştirildi. Artık oyuncu en az 2 cana sahipken hata yaparsa "Tekrar Dene" ekranı gelmiyor ve sadece mesajla bilgilendiriliyor. Ayrıca Sürpriz Kutular (?)'ın mekaniği değiştirildi. Önceki sürümlerde zamanın hızlanması veya yavaşlaması etkilerinde süre direkt olarak artıyor veya azalıyordu. Şu anda etkiler sürenin akış hızını değiştiriyor.
 
 ---
 
 ## 🔴 Bilinen Hatalar
 - Bazı durumlarda seviye süresi bittiği halde oyun arkaplanda devam ediyor ve karakter bir engele çarparsa oyun kaybediliyor.
 - Bazı durumlarda Seviye 3'ten itibaren, Ana Menü'ye dönmek veya oyunu kaybetmek seviyeyi sıfırlamıyor.
-- Oyuncu ekstra can sahibiyken, zaman durması sırasında yanlış yaptığında "zamanda geriye gittin" uyarısının hemen ardından bir duvara çarparsa, iki uyarı mesajı çakışıyor ve seviye sıfırlanıyor.
 
 ---
 

@@ -18,7 +18,7 @@ let musicOn = true, isPaused = true, level = 1, time = 20, lives = 0;
 let timer, gameLoop, arrowInterval, spawnInterval, arrowCountdown;
 let arrowElapsed = 0, arrowDuration = 0;
 let onArrowKeyDown = null;
-let playerY = 30, velocityY = 0, gravity = -0.45, jumpStrength = 10.3, isJumping = false;
+let playerY = 30, velocityY = 0, gravity = -0.30, jumpStrength = 10.3, isJumping = false;
 let worldOffset = 0, worldSpeed = 2;
 let keysToPress = [], arrows = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
 let successfulArrowCount = 0, totalArrowCount = 0;

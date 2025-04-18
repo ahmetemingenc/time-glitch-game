@@ -206,7 +206,7 @@ Oyuncunun seçtiği renk karaktere uygulanır. Neon efekti görsellik kazandır�
 
 ## 🔴 Bilinen Hatalar
 - Bazı durumlarda seviye süresi bittiği halde oyun arkaplanda devam ediyor ve karakter bir engele çarparsa oyun kaybediliyor.
-- Bazı durumlarda Seviye 3'ten itibaren, Ana Menü'ye dönmek veya oyunu kaybetmek seviyeyi sıfırlamıyor.
+- Zaman durması sırasında Pause menüsü açılır ve kapatılırsa, zaman durması iptal oluyor.
 
 ---
 

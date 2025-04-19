@@ -1,4 +1,3 @@
-// === GLOBAL DEĞİŞKENLER ===
 let score = 0;
 let highScore = parseInt(localStorage.getItem("highScore")) || 0;
 const $ = id => document.getElementById(id);
@@ -325,6 +324,7 @@ function loseLifeOrRestart() {
         }, 2000);
     } else {
         showMessage("Oyun bitti.");
+        showStats();
         isPaused = true;
         [timer, gameLoop, arrowInterval, spawnInterval].forEach(clearInterval);
     }

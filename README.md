@@ -195,10 +195,8 @@ Oyuncunun seçtiği renk karaktere uygulanır. Neon efekti görsellik kazandır�
 
 ## 🚀 Geliştirme Fikirleri
 
-- 🧠 Skor ve yüksek skor sistemi (localStorage)
 - ⚡ Karakter yetenekleri (çift zıplama, zaman yavaşlatma)
 - 📱 Mobil uyumlu kontroller
-- 🏆 İstatistik ekranı ve başarı sistemi
 - 🔊 Ekstra ses efektleri (zıplama, kutu alma, zaman durması, hata yapma vs.)
 - 📦 Eğilerek geçilmesi gereken ek engeller
 

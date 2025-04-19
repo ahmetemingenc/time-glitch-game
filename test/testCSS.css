@@ -110,6 +110,33 @@ body {
     align-items: center;
     text-shadow: 0 0 10px #0ff;
 }
+
+#score {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 150px;
+    padding: 10px 15px;
+    font-size: 18px;
+    border: 1px solid #0ff;
+    border-radius: 8px;
+    background: rgba(0,255,255,0.1);
+    box-shadow: 0 0 8px #0ff;
+    z-index: 500;
+}
+
+#statsList {
+    list-style: none;
+    font-size: 18px;
+    padding: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#statsList li {
+    margin: 8px 0;
+}
+
 .menu.active {
     display: flex;
 }

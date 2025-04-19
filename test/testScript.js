@@ -1,4 +1,6 @@
 // === GLOBAL DEĞİŞKENLER ===
+let score = 0;
+let highScore = parseInt(localStorage.getItem("highScore")) || 0;
 const $ = id => document.getElementById(id);
 const player = $("player"), world = $("world"), game = $("game");
 const arrowPrompt = $("arrowPrompt"), timeDisplay = $("timeLeft");
@@ -24,6 +26,14 @@ let keysToPress = [], arrows = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown
 let successfulArrowCount = 0, totalArrowCount = 0;
 let timeRate = 1;
 
+let totalTimePlayed = 0;
+let totalLostLives = 0;
+
+const statsScreen = $("statsScreen");
+const statsList = $("statsList");
+const statsBackBtn = $("statsBackBtn");
+
+
 function applyCharacterColor() {
     const color = colorPicker.value;
     player.style.backgroundColor = color;
@@ -31,7 +41,10 @@ function applyCharacterColor() {
 }
 
 startBtn.onclick = () => {
+    $("score").style.display = "block";
     mainMenu.classList.remove("active");
+    $("score").style.display = "block";
+    $("score").style.display = "block";
     applyCharacterColor();
     if (musicOn) bgm.play();
     startLevel();
@@ -39,6 +52,8 @@ startBtn.onclick = () => {
 
 resumeBtn.onclick = () => {
     pauseMenu.classList.remove("active");
+    $("score").style.display = "block";
+    $("score").style.display = "block";
     isPaused = false;
 
     if (arrowPrompt.style.display === "block" && arrowElapsed < arrowDuration) {
@@ -66,8 +81,11 @@ volumeRange.oninput = () => {
 };
 
 backToMenuBtn.onclick = () => {
+    $("score").style.display = "none";
     pauseMenu.classList.remove("active");
     mainMenu.classList.add("active");
+    $("score").style.display = "none";
+    $("score").style.display = "none";
     [timer, gameLoop, arrowInterval, spawnInterval].forEach(clearInterval);
     isPaused = true;
     level = 1;
@@ -83,16 +101,31 @@ nextLevelBtn.onclick = () => {
 };
 
 restartBtn.onclick = () => {
+    score = 0;
     level = 1;
     lives = 0;
     overlay.classList.remove("active");
     startLevel();
 };
 
+statsBackBtn.onclick = () => {
+    statsScreen.classList.remove("active");
+    mainMenu.classList.add("active");
+    $("score").style.display = "none";
+
+    score = 0;
+    level = 1;
+    lives = 0;
+    totalTimePlayed = 0;
+    totalLostLives = 0;
+};
+
 document.addEventListener("keydown", e => {
     if (e.key === "Escape") {
         isPaused = true;
         pauseMenu.classList.add("active");
+        $("score").style.display = "none";
+        $("score").style.display = "none";
         arrowPrompt.style.display = "none";
         keyBar.style.display = "none";
         if (arrowCountdown) clearInterval(arrowCountdown);
@@ -113,8 +146,10 @@ document.addEventListener("keyup", e => {
 });
 
 function startLevel() {
+    $("score").textContent = `Skor: ${score} | En Yüksek: ${highScore}`;
     isPaused = true;
     time = 20 + (level - 1) * 10;
+    totalTimePlayed += time;
     timeDisplay.textContent = time;
     levelDisplay.textContent = level;
     worldOffset = 0; playerY = 30; velocityY = 0; isJumping = false;
@@ -208,14 +243,18 @@ function pauseGameForArrow() {
     onArrowKeyDown = function(e) {
         if (!arrows.includes(e.key)) return;
 
-        if (keysToPress.includes(e.key)) {
-            keysToPress = keysToPress.filter(k => k !== e.key);
+        const index = keysToPress.indexOf(e.key);
+        if (index !== -1) {
+            keysToPress.splice(index, 1);
             if (keysToPress.length === 0) {
-                isPaused = false;
+                updateScore(50);
                 successfulArrowCount++;
+                clearInterval(arrowCountdown);
                 cleanupArrowPrompt();
+                isPaused = false;
             }
         } else {
+            clearInterval(arrowCountdown);
             glitchEffect();
             setTimeout(() => {
                 handleArrowFail();
@@ -236,22 +275,49 @@ function cleanupArrowPrompt() {
 
 function handleArrowFail() {
     isPaused = false;
-    if (keysToPress.length === 1) loseLifeOrRestart();
-    else {
-        showMessage("Başarısız! Zamanda geri gittin.");
-        level = Math.max(1, level - 1);
-        setTimeout(startLevel, 2000);
+    if (lives > 0) {
+        lives--;
+        totalLostLives++;
+        livesDisplay.textContent = lives;
+        floatingMessage.textContent = "Zamanda Geriye Gittin!";
+        floatingMessage.style.display = "block";
+        setTimeout(() => {
+            floatingMessage.style.display = "none";
+            startLevel();
+        }, 1500);
+    } else {
+        showMessage("Oyun bitti.");
+        showStats();
+        score = 0;
+        level = 1;
+        successfulArrowCount = 0;
+        totalArrowCount = 0;
+        isPaused = true;
+        [timer, gameLoop, arrowInterval, spawnInterval].forEach(clearInterval);
     }
 }
-
 function glitchEffect() {
     game.classList.add("glitch");
     setTimeout(() => game.classList.remove("glitch"), 400);
 }
 
+function showStats() {
+    $("score").style.display = "none";
+    statsList.innerHTML = `
+    <li>Ulaşılan Seviye: ${level}</li>
+    <li>Toplam Skor: ${score}</li>
+    <li>Geçen Tahmini Süre: ${totalTimePlayed} sn</li>
+    <li>Başarılı Zaman Durmaları: ${successfulArrowCount}</li>
+    <li>Kaybedilen Can: ${totalLostLives}</li>
+  `;
+    statsScreen.classList.add("active");
+    overlay.classList.remove("active");
+}
+
 function loseLifeOrRestart() {
     if (lives > 0) {
         lives--;
+        totalLostLives++;
         livesDisplay.textContent = lives;
         showMessage("Bir can kaybettin! Devam...");
         setTimeout(() => {
@@ -272,6 +338,7 @@ function nextLevel() {
     }
     successfulArrowCount = 0;
     totalArrowCount = 0;
+    updateScore(100);
     level++;
     levelTransitionText.textContent = "Seviye " + (level - 1) + " tamamlandı!";
     levelTransition.classList.add("active");
@@ -333,11 +400,21 @@ function checkCollisions() {
     });
 }
 
+function updateScore(amount) {
+    score += amount;
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("highScore", highScore);
+    }
+    $("score").textContent = `Skor: ${score} | En Yüksek: ${highScore}`;
+}
+
 function removeAll(sel) {
     document.querySelectorAll(sel).forEach(e => e.remove());
 }
 
 function showMessage(txt) {
+    if (txt.includes("Skor")) return;
     if (overlay.classList.contains("active")) return;
     messageText.textContent = txt;
     overlay.classList.add("active");
@@ -347,6 +424,7 @@ function showMessage(txt) {
 }
 
 function addLife() {
+    updateScore(75);
     lives++;
     livesDisplay.textContent = lives;
     floatingMessage.textContent = "Ekstra Can Kazandın!";

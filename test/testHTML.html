@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>TIME GLITCH GAME</title>
-    <link rel="stylesheet" href="testCSS.css" />
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -34,6 +34,7 @@
     <div id="arrowPrompt"></div>
     <div id="keyTimerBar"><div id="keyTimerFill"></div></div>
     <div id="timer">Süre: <span id="timeLeft">0</span></div>
+    <div id="score">Skor: 0 | En Yüksek: 0</div>
     <div id="lives">Can: <span id="livesCount">0</span></div>
     <div id="level">Seviye: <span id="levelNum">1</span></div>
     <div id="messageOverlay">
@@ -41,10 +42,16 @@
         <button id="restartBtn">Tekrar Dene</button>
     </div>
     <div id="floatingMessage"></div>
+    <div id="statsScreen" class="menu">
+        <h2>İstatistikler</h2>
+        <ul id="statsList"></ul>
+        <button id="statsBackBtn">Ana Menüye Dön</button>
+    </div>
+
 </div>
 
 <audio id="bgm" src="timeglitchgame/assets/sounds/background.wav" loop></audio>
 
-<script src="testScript.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

@@ -20,11 +20,19 @@ let musicOn = true, isPaused = true, level = 1, time = 20, lives = 0;
 let timer, gameLoop, arrowInterval, spawnInterval, arrowCountdown;
 let arrowElapsed = 0, arrowDuration = 0;
 let onArrowKeyDown = null;
-let playerY = 30, velocityY = 0, gravity = -0.45, jumpStrength = 10.3, isJumping = false;
+let playerY = 30, velocityY = 0, gravity = -0.30, jumpStrength = 10.3, isJumping = false;
 let worldOffset = 0, worldSpeed = 2;
 let keysToPress = [], arrows = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
 let successfulArrowCount = 0, totalArrowCount = 0;
 let timeRate = 1;
+
+let totalTimePlayed = 0;
+let totalLostLives = 0;
+
+const statsScreen = $("statsScreen");
+const statsList = $("statsList");
+const statsBackBtn = $("statsBackBtn");
+
 
 function applyCharacterColor() {
     const color = colorPicker.value;
@@ -100,6 +108,18 @@ restartBtn.onclick = () => {
     startLevel();
 };
 
+statsBackBtn.onclick = () => {
+    statsScreen.classList.remove("active");
+    mainMenu.classList.add("active");
+    $("score").style.display = "none";
+
+    score = 0;
+    level = 1;
+    lives = 0;
+    totalTimePlayed = 0;
+    totalLostLives = 0;
+};
+
 document.addEventListener("keydown", e => {
     if (e.key === "Escape") {
         isPaused = true;
@@ -129,6 +149,7 @@ function startLevel() {
     $("score").textContent = `Skor: ${score} | En Yüksek: ${highScore}`;
     isPaused = true;
     time = 20 + (level - 1) * 10;
+    totalTimePlayed += time;
     timeDisplay.textContent = time;
     levelDisplay.textContent = level;
     worldOffset = 0; playerY = 30; velocityY = 0; isJumping = false;
@@ -256,6 +277,7 @@ function handleArrowFail() {
     isPaused = false;
     if (lives > 0) {
         lives--;
+        totalLostLives++;
         livesDisplay.textContent = lives;
         floatingMessage.textContent = "Zamanda Geriye Gittin!";
         floatingMessage.style.display = "block";
@@ -265,6 +287,7 @@ function handleArrowFail() {
         }, 1500);
     } else {
         showMessage("Oyun bitti.");
+        showStats();
         score = 0;
         level = 1;
         successfulArrowCount = 0;
@@ -278,9 +301,23 @@ function glitchEffect() {
     setTimeout(() => game.classList.remove("glitch"), 400);
 }
 
+function showStats() {
+    $("score").style.display = "none";
+    statsList.innerHTML = `
+    <li>Ulaşılan Seviye: ${level}</li>
+    <li>Toplam Skor: ${score}</li>
+    <li>Geçen Tahmini Süre: ${totalTimePlayed} sn</li>
+    <li>Başarılı Zaman Durmaları: ${successfulArrowCount}</li>
+    <li>Kaybedilen Can: ${totalLostLives}</li>
+  `;
+    statsScreen.classList.add("active");
+    overlay.classList.remove("active");
+}
+
 function loseLifeOrRestart() {
     if (lives > 0) {
         lives--;
+        totalLostLives++;
         livesDisplay.textContent = lives;
         showMessage("Bir can kaybettin! Devam...");
         setTimeout(() => {
